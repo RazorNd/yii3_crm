@@ -1,6 +1,5 @@
 <?php
 
-use app\models\Setting;
 use yii\db\Migration;
 
 /**
@@ -13,7 +12,7 @@ class m180701_114132_installation_flag extends Migration
      */
     public function safeUp()
     {
-        $this->insert(Setting::tableName(), [
+        $this->insert(\app\repositories\impl\DbSettingsRepository::TABLE, [
             'key' => \app\helpers\InstallationHelper::SETTING_APP_INSTALLED,
             'value' => false,
         ]);
@@ -24,7 +23,9 @@ class m180701_114132_installation_flag extends Migration
      */
     public function safeDown()
     {
-        $this->delete(Setting::tableName(), ['key' => \app\helpers\InstallationHelper::SETTING_APP_INSTALLED]);
+        $this->delete(\app\repositories\impl\DbSettingsRepository::TABLE, [
+            \app\repositories\impl\DbSettingsRepository::KEY => \app\helpers\InstallationHelper::SETTING_APP_INSTALLED
+        ]);
     }
 
     /*

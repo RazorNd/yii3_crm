@@ -49,6 +49,14 @@ $commonConfig = [
             ],
         ],
     ],
+    'container' => [
+        'definitions' => [
+            \app\repositories\SettingsRepository::class => \app\repositories\impl\DbSettingsRepository::class,
+            yii\caching\CacheInterface::class =>  function() {
+                return \Yii::$app->getCache();
+            }
+        ]
+    ]
 ];
 
 if (YII_ENV_DEV) {
