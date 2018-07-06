@@ -9,15 +9,18 @@ use yii\db\Connection;
 use yii\db\Query;
 
 /**
- * Class DbSettingsRepository
+ * Class DbSettingsRepository implementing {@link SettingRepository} with storage in Database/
  * @package app\repositories\impl
  * @author Daniil (razornd) Razorenov <razor@razornd.ru>
  */
 class DbSettingsRepository implements SettingsRepository
 {
 
+    /** @var string Column name in database with setting value */
     const VALUE = 'value';
+    /** @var string Table in database where setting store */
     const TABLE = '{{%setting}}';
+    /** @var string Column name in database with setting key */
     const KEY = 'key';
 
     /**
@@ -37,20 +40,22 @@ class DbSettingsRepository implements SettingsRepository
     /**
      * @inheritdoc
      */
-    public function fetchSettingJson(string $key):?string
+    public function fetchSetting(string $key)
     {
-        return (new Query())
+        $value = (new Query())
             ->select(static::VALUE)
             ->from(static::TABLE)
             ->where([static::KEY => $key])
             ->limit(1)
             ->scalar($this->db);
+        return is_string($value) ? json_decode($value, true) : null;
     }
 
     /**
      * @inheritdoc
+     * @throws \yii\db\Exception
      */
-    public function saveSettingJson(string $key, string $value): void
+    public function saveSetting(string $key, $value): void
     {
         if ($this->hasContain($key)) {
             $this->update($key, $value);
@@ -61,6 +66,7 @@ class DbSettingsRepository implements SettingsRepository
 
     /**
      * @inheritdoc
+     * @throws \yii\db\Exception
      */
     public function insert(string $key, $value): void
     {
@@ -69,11 +75,12 @@ class DbSettingsRepository implements SettingsRepository
             ->insert(static::TABLE, [
                 static::KEY => $key,
                 static::VALUE => $value
-            ]);
+            ])->execute();
     }
 
     /**
      * @inheritdoc
+     * @throws \yii\db\Exception
      */
     public function update(string $key, $value): void
     {
@@ -83,7 +90,7 @@ class DbSettingsRepository implements SettingsRepository
                 static::VALUE => $value
             ], [
                 static::KEY => $key
-            ]);
+            ])->execute();
     }
 
     /**

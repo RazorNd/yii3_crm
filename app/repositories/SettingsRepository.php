@@ -4,27 +4,27 @@
 namespace app\repositories;
 
 /**
- * Interface SettingsRepository
+ * Interface SettingsRepository repository for store settings
  * @package app\repositories
- * @author Daniil razornd Razorenov <razor@razornd.ru>
+ * @author Daniil (razornd) Razorenov <razor@razornd.ru>
  */
 interface SettingsRepository
 {
     /**
-     * fetch JSON with setting from storage
+     * fetch setting value from storage
      *
      * @param string $key setting key
-     * @return null|string json with setting or null if setting with passed key hasn't exist
+     * @return null|mixed setting or null if setting with passed key hasn't exist
      */
-    public function fetchSettingJson(string $key):?string;
+    public function fetchSetting(string $key);
 
     /**
      * save setting in storage
      *
      * @param string $key setting key
-     * @param string $value setting value
+     * @param mixed $value setting value
      */
-    public function saveSettingJson(string $key, string $value): void;
+    public function saveSetting(string $key, $value): void;
 
     /**
      * check existing setting with passed key in storage
